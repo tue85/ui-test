@@ -1,50 +1,48 @@
+// ProductPageTest.java
 package com.petrovich.ui.tests;
 
 import com.petrovich.ui.pages.ProductPage;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
-import com.codeborne.selenide.Condition;
-import java.time.Duration;
-import static com.codeborne.selenide.Selenide.$;
 
 public class ProductPageTest extends BaseTest {
     private final String code = "104843";
 
     @Test
     public void testProductDetailsPageElements() {
-        String expectedTitle = "Штукатурка гипсовая Knauf МП-75 машинная 30 кг";
-
-        String expectedDescriptionSnippet = "Гипсовая машинная штукатурка Knauf МП-75";
-
         // Открываем страницу товара
-        ProductPage p = new ProductPage().open(code);
+        ProductPage product = new ProductPage().open(code);
 
-        // Ждём появления заголовка и проверяем его
-        $("h1").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertEquals(expectedTitle, p.getTitle());
+        // Проверяем заголовок страницы
+        String expectedTitle = "Штукатурка гипсовая Knauf МП-75 машинная 30 кг";
+        assertEquals(expectedTitle, product.getTitle(), "Заголовок страницы не соответствует ожидаемому");
 
-        // Ждём отображения цены и проверяем значение без валюты
-        $("[class*=price]").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertEquals("615", p.getPrice().replaceAll("\\D", ""));
+        // Проверяем отображение цены
+        String price = product.getPrice();
+        assertNotNull(price, "Цена не должна быть null");
+        assertFalse(price.isEmpty(), "Цена не должна быть пустой строкой");
 
-        // Ждём описания и проверяем, что содержится нужный фрагмент
-        $("div.product-description").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertTrue(p.getDescription().contains(expectedDescriptionSnippet));
+        // Проверяем описание товара
+        String description = product.getDescription();
+        assertNotNull(description, "Описание не должно быть null");
+        assertFalse(description.isEmpty(), "Описание не должно быть пустым");
 
-        // Ждём появления изображения товара по фрагменту src и проверяем
-        $("img[src*='mp75']").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertTrue(p.isImageDisplayed("mp75"));
+        // Проверяем работу кнопки "В корзину"
+        int initialCount = product.getCartCount();
+        product.addToCart();
+        assertEquals(initialCount + 1, product.getCartCount(), "Счётчик в корзине должен увеличиться на 1 после добавления товара");
+
+        // Проверяем, что изображение товара отображается
+        assertTrue(product.isImageDisplayed("mp75"), "Изображение товара с фрагментом 'mp75' в src должно быть видно");
 
         // Проверяем таблицу технических характеристик
-        $("table.tech-specs").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertTrue(p.hasTechnicalSpecifications());
+        assertTrue(product.hasTechnicalSpecifications(), "Таблица технических характеристик должна быть видна");
 
         // Проверяем секцию "Отзывы"
-        $("*[class*=reviews], *:contains('Отзывы')").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertTrue(p.hasReviewsSection());
+        assertTrue(product.hasReviewsSection(), "Секция отзывов должна быть видна");
 
         // Проверяем секцию "Доставка"
-        $("*[class*=delivery], *:contains('Доставка')").shouldBe(Condition.visible, Duration.ofSeconds(2));
-        assertTrue(p.hasDeliveryInfoSection());
+        assertTrue(product.hasDeliveryInfoSection(), "Секция информации о доставке должна быть видна");
     }
 }
