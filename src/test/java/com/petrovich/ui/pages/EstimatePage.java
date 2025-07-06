@@ -10,18 +10,12 @@ import org.slf4j.LoggerFactory;
 public class EstimatePage extends BasePage {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    private static final String NAME_INPUT_NAME        = "estimateName";
-    private static final String ADD_BUTTON_TEXT        = "Добавить";
-    private static final String ARTICLE_INPUT_NAME     = "article";
-    private static final String QUANTITY_INPUT_NAME    = "quantity";
-    private static final String SAVE_BUTTON_TEXT       = "Сохранить";
-
     // Элементы формы сметы
-    private final Input  nameInput     = Input.byName(NAME_INPUT_NAME);
-    private final Button addBtn        = Button.byText(ADD_BUTTON_TEXT);
-    private final Input  articleInput  = Input.byName(ARTICLE_INPUT_NAME);
-    private final Input  quantityInput = Input.byName(QUANTITY_INPUT_NAME);
-    private final Button saveBtn       = Button.byText(SAVE_BUTTON_TEXT);
+    private final Input  nameInput     = Input.byName("estimateName");
+    private final Button addBtn        = Button.byText("Добавить");
+    private final Input  articleInput  = Input.byName("article");
+    private final Input  quantityInput = Input.byName("quantity");
+    private final Button saveBtn       = Button.byText("Сохранить");
 
     /** Установить название сметы */
     public void setName(String name) {
